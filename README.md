@@ -28,20 +28,19 @@ Program is meand to run on Ubuntu 16.04LTS and ROS Kinetic.
 
 First, you need to be in a catkin workspace. Please see the 2nd and 3rd link in Overview.
 
-'''
+```
 $ cd ~/catkin_ws/
 $ source devel/setup.bash
 $ cd src/
 $ git clone -b https://github.com/sanhuezapablo/beginner_tutorials.git
 $ cd ..
 $ catkin_make
-'''
+```
 
 
 If you did not see the tutorials linked, this is how you create a catkin workspace. This includes running catkin_make.
 
-'''
-
+```
 $ mkdir -p ~/catkin_ws/src
 $ cd ~/catkin_ws/
 $ catkin_make
@@ -50,37 +49,34 @@ $ cd src/
 $ git clone -b https://github.com/sanhuezapablo/beginner_tutorials.git
 $ cd ..
 $ catkin_make
-'''
+```
 
 
 Finally, we can run the code. Here we will run the 2 nodes. The publisher is the talker.cpp, and the subscriber is the listener.cpp. 
 
 First, run **roscore** in a terminal
 
-'''
-
+```
 $ roscore
-'''
+```
 
 
 Open a new terminal. In your catkin workspace run the commands below. Here we will run the pusblisher (**talker**).
 
-'''
-
+```
 $ cd ~/catkin_ws
 $ source ./devel/setup.bash
 $ rosrun beginner_tutorials talker
-'''
+```
 
 
 Now, open a new terminal (again), and follow comands below. Here we will run the subscriber (**listener**)
 
-'''
-
+```
 $ cd ~/catkin_ws
 $ source ./devel/setup.bash
 $ rosrun beginner_tutorials listener
-'''
+```
 
 **Now you will see these 2 nodes communicating**
 
