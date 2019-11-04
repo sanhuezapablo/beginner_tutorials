@@ -1,11 +1,33 @@
+/**
+ * Distributed under the BSD License (license terms found in LICENSE or at https://www.freebsd.org/copyright/freebsd-license.html)
+ * @file talker.cpp
+ * @brief Part of tutorial that demonstrated simple sending of messages over ROS system with services included.
+ * @author Pablo Sanhueza
+ * @copyright 2019 Pablo Sanhueza
+ */
+
 #include <sstream>
 #include "ros/ros.h"
 #include "std_msgs/String.h"
+#include "beginner_tutorials/set_string.h"
+
+/// Default string published
+extern std::string strOut = "String before setting new String";
 
 /**
- * This tutorial demonstrates simple sending of messages over the ROS system.
- * @copyright 2019 Pablo Sanhueza
+ * @brief setString changes the string being published by talker
+ * @param req, res These are the request and response in the srv file located within SRV sub-directory.
+ * @return True Returns boolean as True if service has been completed
  */
+bool setString(beginner_tutorials::set_string::Request &req,
+                   beginner_tutorials::set_string::Response &res) {
+  res.output = req.input;
+  strOut = res.output;
+
+  return true;
+}
+
+
 
 int main(int argc, char **argv) {
   /**
@@ -44,9 +66,41 @@ int main(int argc, char **argv) {
    * than we can send them, the number here specifies how many messages to
    * buffer up before throwing some away.
    */
-  ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
 
-  ros::Rate loop_rate(10);
+  ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
+  ros::ServiceServer service = n.advertiseService("set_string", setString);
+
+  /// Default frequency
+  int freq = 1;
+
+  /// Frequency passed
+  if (argc > 1) {
+    freq = atoi(argv[1]);
+    ROS_DEBUG_STREAM(" Frequency entered: " << freq);
+  }
+
+  /// Fatal message displayed if frequency is set to 0
+  if (freq == 0) {
+    ROS_FATAL_STREAM("Frequency can't be 0 - "
+      "Please launch again with valid frequency.");
+    ros::shutdown();
+  }
+
+  /// Warning displayed if frequency entered is negative
+  if (freq < 0) {
+    ROS_FATAL_STREAM("Frequency can't be negative - "
+      "Please launch again with valid frequency.");
+    ros::shutdown();
+  }
+
+  /// Warning displayed if frequency is too high. Sets it back to low freq.
+  if (freq > 500) {
+    freq = 1;
+    ROS_WARN_STREAM("Frequency is too high");
+    ROS_ERROR_STREAM("Frequency has been set to 1 Hz.");
+  }
+
+  ros::Rate loop_rate(freq);
 
   /**
    * A count of how many messages we have sent. This is used to create
@@ -60,10 +114,10 @@ int main(int argc, char **argv) {
     std_msgs::String msg;
 
     std::stringstream ss;
-    ss << "ENPM808X - Go Terps! " << count;
+    ss << strOut << count;
     msg.data = ss.str();
 
-    ROS_INFO("%s", msg.data.c_str());
+    ROS_INFO_STREAM(msg.data.c_str());
 
     /**
      * The publish() function is how you send messages. The parameter
