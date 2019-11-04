@@ -1,4 +1,6 @@
-1/2 files checked 44% done
+Checking src/listener.cpp...
+1/2 files checked 34% done
 Checking src/talker.cpp...
 2/2 files checked 100% done
+
 
