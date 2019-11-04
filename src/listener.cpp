@@ -1,11 +1,14 @@
-#include "ros/ros.h"
-#include "std_msgs/String.h"
-
-
 /**
- * This tutorial demonstrates simple receipt of messages over the ROS system.
+ * Distributed under the BSD License (license terms found in LICENSE or at https://www.freebsd.org/copyright/freebsd-license.html)
+ * @file listener.cpp
+ * @brief Part of tutorial that demonstrated simple sending of messages over ROS system with services included.
+ * @author Pablo Sanhueza
  * @copyright 2019 Pablo Sanhueza
  */
+
+
+#include "ros/ros.h"
+#include "std_msgs/String.h"
 
 void chatterCallback(const std_msgs::String::ConstPtr& msg) {
   ROS_INFO("I heard: [%s]", msg->data.c_str());
