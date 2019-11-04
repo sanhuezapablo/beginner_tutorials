@@ -21,6 +21,7 @@ extern std::string strOut = "String before setting new String";
  */
 bool setString(beginner_tutorials::set_string::Request &req,
                    beginner_tutorials::set_string::Response &res) {
+  ROS_INFO_STREAM("Service Call Initiated");
   res.output = req.input;
   strOut = res.output;
 
@@ -68,6 +69,8 @@ int main(int argc, char **argv) {
    */
 
   ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
+
+  /// ROS service initiated and also advertised
   ros::ServiceServer service = n.advertiseService("set_string", setString);
 
   /// Default frequency
@@ -81,22 +84,22 @@ int main(int argc, char **argv) {
 
   /// Fatal message displayed if frequency is set to 0
   if (freq == 0) {
-    ROS_FATAL_STREAM("Frequency can't be 0 - "
-      "Please launch again with valid frequency.");
+    ROS_ERROR_STREAM("Frequency can't be 0");
+    ROS_FATAL_STREAM("Please launch again with valid frequency.");
     ros::shutdown();
   }
 
   /// Warning displayed if frequency entered is negative
   if (freq < 0) {
-    ROS_FATAL_STREAM("Frequency can't be negative - "
-      "Please launch again with valid frequency.");
+    ROS_ERROR_STREAM("Frequency can't be negative");
+    ROS_FATAL_STREAM("Please launch again with valid frequency.");
     ros::shutdown();
   }
 
   /// Warning displayed if frequency is too high. Sets it back to low freq.
   if (freq > 500) {
-    freq = 1;
     ROS_WARN_STREAM("Frequency is too high");
+    freq = 1;
     ROS_ERROR_STREAM("Frequency has been set to 1 Hz.");
   }
 
