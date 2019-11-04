@@ -123,7 +123,7 @@ $ source ./devel/setup.bash
 $ roslaunch beginner_tutorials launch_talker_listener.launch
 ```
 
-This launch file is set to a default frequency of 2 Hz. To change this please add the desired frequency in replacement of <new_frequency> in the commands below.
+This launch file is set to a default frequency of 1 Hz. To change this please add the desired frequency in replacement of <new_frequency> in the commands below.
 
 ```
 $ source ./devel/setup.bash
