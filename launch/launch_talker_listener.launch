@@ -1,8 +1,15 @@
  
 <launch>
   <arg name  ="freq" default = "1"/>
+  <arg name = "record" default = "disabled"/>
+
  <node name = "publisher" pkg = "beginner_tutorials" type = "talker" output = "screen" args = "$(arg freq)"/>
 
   <node name = "subscriber" pkg = "beginner_tutorials" type = "listener" output = "screen" launch-prefix = "gnome-terminal -e"
+   />
+
+ <node
+    name = "rosbag" pkg = "rosbag" type = "record" args = "-a -O $(find beginner_tutorials)/results/results_talker.bag"
+    if = "$(eval record == 'enable')"
    />
 </launch>
