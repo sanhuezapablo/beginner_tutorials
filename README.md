@@ -5,7 +5,7 @@
 
 ### Overview
 
-Here you will see an introduction to what a publisher and subscriber is in ROS. These two (publisher and subscriber) nodes demonstrate how these interact with one another. To get a better understanding of what each one of these are, please follow the tutorials listed below. These will start from the most basic, such as navigatinr the ROS filesystem, creating a package, building a package, and understanding nodes. Please follow links below.
+Here you will see an introduction to what a publisher and subscriber is in ROS. These two (publisher and subscriber) nodes demonstrate how these interact with one another. To get a better understanding of what each one of these are, please follow the tutorials listed below. These will start from the most basic, such as navigating the ROS filesystem, creating a package, building a package, and understanding nodes. Please follow links below.
 
 - [Navigating the ROS Filesystem](http://wiki.ros.org/ROS/Tutorials/NavigatingTheFilesystem)
 - [Creating a ROS Package](http://wiki.ros.org/ROS/Tutorials/CreatingPackage)
@@ -16,18 +16,34 @@ Here you will see an introduction to what a publisher and subscriber is in ROS. 
 - [Examining the Simple Publisher and Subscriber](http://wiki.ros.org/ROS/Tutorials/ExaminingPublisherSubscriber)
 
 
-Additional tutorials for the second half of this tutorial. Here we will see how services and clients work on ROS. Follow tutorials below to have a better understanding of how these work.
+Tutorials for services and clients on ROS. Follow tutorials below to have a better understanding of how these work.
 
 - [Getting started with roswtf](http://wiki.ros.org/ROS/Tutorials/Getting%20started%20with%20roswtf)
 - [Understanding ROS Services and Parameters](http://wiki.ros.org/ROS/Tutorials/UnderstandingServicesParams)
 - [Using rqt_console and roslaunch](http://wiki.ros.org/ROS/Tutorials/UsingRqtconsoleRoslaunch)
 - [Writing a Simple Service and Client (C++)](http://wiki.ros.org/ROS/Tutorials/WritingServiceClient%28c%2B%2B%29)
 
+Tutorials for running ROSTEST and GTESTS
 
-**The last 3 links of the first part of the tutorial are the most important to get started.**
+- [Writing rostest Files](http://wiki.ros.org/rostest/Writing)
+- [gtest](http://wiki.ros.org/gtest)
 
-**Last link of additional tutorials is the most important for writing a simple service and client in ROS. This same tutorial was followed for the Simple Service and Client section of this repo.**
+Tutorials for ROSBAG
 
+- [Recording and playing back data](http://wiki.ros.org/ROS/Tutorials/Recording%20and%20playing%20back%20data)
+
+Basic important Tutorials for tf
+
+- [Introduction to tf](http://wiki.ros.org/tf/Tutorials/Introduction%20to%20tf)
+- [Writing a tf broadcaster (C++)](http://wiki.ros.org/tf/Tutorials/Writing%20a%20tf%20broadcaster%20%28C%2B%2B%29)
+- [Writing a tf listener (C++)](http://wiki.ros.org/tf/Tutorials/Writing%20a%20tf%20listener%20%28C%2B%2B%29)
+
+
+**The last 3 links of the publisher and subscriber tutorials are the most important to get started.**
+
+**Last link of service and clientes is the most important for writing a simple service and client in ROS. This same tutorial was followed for the Simple Service and Client section of this repo.**
+
+**The tutorials for ROSTEST, GTEST, and introduction to tf are important for this repo.**
 
 
 ## License
@@ -141,3 +157,103 @@ $ rosservice call /set_string "input: '<new_string>'"
 ```
 
 Now you should see a change in string being published by the talker.
+
+
+### Viewing & Inspecting tf frames
+
+Here we are able to visualize and inspect what a tf broadcaster does. A tf broadcaster broadcasts the transformation between the /world and /talker frame. Additionaly, for this specific repo we have a time varying broadcaster (check source codes for more information). To run the commands below, please keep in mind that you need to have either the talker node running, or both the talker and listener node. The steps shown to run these nodes are displayed in earlier sections by using the launch file launch_talker_listener.launch.
+
+```
+$ rosrun tf tf_echo /world /talk
+```
+
+To visualize this we can run the command below in a new terminal.
+
+```
+$ rosrun rqt_tf_tree rqt_tf_tree
+```
+
+Graphical form of what we saw in the previous command. Run command below. This will generate a pdf.
+
+```
+$ rosrun tf view_frames
+```
+
+To open the pdf we run:
+
+```
+$ evince frames.pdf
+```
+
+### Running rostest (gtests)
+
+For this particular repo I have decided to test that the service call has been initialized properly. Additionally, we will test if the service input and output match. All of this is done in one TestSuite.
+
+To build the code and also run rostest, please follow commands below.
+
+```
+$ cd ~/catkin_ws
+$ catkin_make run_tests_beginner_tutorials
+```
+
+Another form of running rostest is by using the launch (test.launch) file if the code has already been compiled.
+
+```
+$ cd ~/catkin_ws
+$ source devel/setup.bash
+$ rostest beginner_tutorials test.launch
+```
+
+Also, we can run the tests if the talker node is running. Follow steps displayed in previous sections to run talker node.
+
+```
+$ cd ~/catkin_ws
+$ source devel/setup.bash
+$ rosrun beginner_tutorials test_talker
+```
+
+### Using rosbag with launch file
+
+Here we will use a bag file that records topic messages of the talker node. Later, we will run the listener node and play the information stored in the bag file (results_talker.bag). The rosbag is saved as results_talker.bag in the results directory.
+
+**Keep in mind that by not passing the "record:=enable" argument you will not record anything. The launch file is by default disabled to not record.**
+
+Running the launch file and passing the argument to enable recording.
+
+```
+$ cd ~/catkin_ws
+$ source devel/setup.bash
+$ roslaunch beginner_tutorials launch_talker_listener.launch record:=enable
+```
+
+## Inspect bag file
+
+To inspect the information in the bag file we need to be in the results directory of this repo. Make sure you are in this directory if not you will get an error in the terminal. Commands below to go into the directory specified in addition to viewing bag information.
+
+```
+$ cd ~/catkin_ws/src/beginner_tutorials/results
+$ rosbag info results_talker.bag
+```
+
+## Play recorded bag
+
+Once the bag has been recorded, you can run the listener node and play the content of the results_talker.bag
+
+First, open a new terminal and run the listener node.
+
+```
+$ cd ~/catkin_ws
+$ source devel/setup.bash
+$ rosrun beginner_tutorials listener
+```
+
+Now open a different terminal and play recorded bag.
+
+```
+$ cd ~/catkin_ws/src/beginner_tutorials/results
+$ rosbag play results_talker.bag
+```
+
+**Now go back to the terminal where the listener node is running, and you will be able to see the information in the recorded bag file.**
+
+
