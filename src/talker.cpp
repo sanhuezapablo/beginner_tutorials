@@ -6,6 +6,7 @@
  * @copyright 2019 Pablo Sanhueza
  */
 
+#include <tf/transform_broadcaster.h>
 #include <sstream>
 #include "ros/ros.h"
 #include "std_msgs/String.h"
@@ -27,7 +28,6 @@ bool setString(beginner_tutorials::set_string::Request &req,
 
   return true;
 }
-
 
 
 int main(int argc, char **argv) {
@@ -105,6 +105,13 @@ int main(int argc, char **argv) {
 
   ros::Rate loop_rate(freq);
 
+  /// TransformBroadcaster and Transform object created.
+  static tf::TransformBroadcaster br;
+  tf::Transform transform;
+
+  /// Quaternion object created
+  tf::Quaternion q;
+
   /**
    * A count of how many messages we have sent. This is used to create
    * a unique string for each message.
@@ -129,6 +136,15 @@ int main(int argc, char **argv) {
      * in the constructor above.
      */
     chatter_pub.publish(msg);
+    transform.setOrigin(tf::Vector3(0.0, 2.0, 0.0));
+
+    /// Set quaternion (roll, pitch, & yaw)
+    q.setRPY(0, 0, 3*count);
+    transform.setRotation(q);
+
+    /// Broadcasting transform by using the TransformBroadcaster.
+    br.sendTransform(tf::StampedTransform(transform,
+    ros::Time::now(), "world", "talk"));
 
     ros::spinOnce();
 
